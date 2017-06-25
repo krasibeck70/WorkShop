@@ -2,17 +2,15 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace PhoneBook
 {
     public class PhoneBook
     {
 
-        private const string PathBook = "C:\\Users\\BecK\\Documents\\visual studio 2017\\Projects\\Musala\\Musala\\phoneBook.txt";
-        private const string PathBookCalls = "C:\\Users\\BecK\\Documents\\Visual Studio 2017\\Projects\\Musala\\Musala\\phoneBookCalls.txt";
+        private const string PathBook = "../../phoneBook.txt";
+        private const string PathBookCalls = "../../phoneBookCalls.txt";
         private const string Pattern = "(\\+359|0|00359)(87|88|89)([2-9])(\\d{6})";
         private Dictionary<string, string> phoneBook = new Dictionary<string, string>();
 
@@ -54,7 +52,7 @@ namespace PhoneBook
         /// </summary>
         /// <param name="name"></param>
         /// <param name="phone"></param>
-        public void AddName(string name, string phone)
+        public void AddContact(string name, string phone)
         {
             ReadPhoneBookByFile();
             if (!phoneBook.ContainsKey(name))
@@ -72,10 +70,10 @@ namespace PhoneBook
         /// Find contact by name and print in to console
         /// </summary>
         /// <param name="name"></param>
-        public void FindByName(string name)
+        public void FindContactByName(string name)
         {
             ReadPhoneBookByFile();
-            PrintByName(phoneBook.FirstOrDefault(x => x.Key.ToLower() == name.ToLower()), name);
+            PrintContactByName(phoneBook.FirstOrDefault(x => x.Key.ToLower() == name.ToLower()), name);
         }
         private static void SavePhoneBook(string nameAndPhone)
         {
@@ -86,12 +84,12 @@ namespace PhoneBook
         /// Delete contact by name
         /// </summary>
         /// <param name="name"></param>
-        public void DeleteNameAndPhone(string name)
+        public void DeleteContactByName(string name)
         {
             ReadPhoneBookByFile();
             if (phoneBook.Remove(name))
             {
-                DeleteFromFile(name);
+                DeleteConatctFromFile(name);
                 Console.WriteLine($"{name} was deleted!");
             }
             else
@@ -103,7 +101,7 @@ namespace PhoneBook
         /// Delete contact by name for file
         /// </summary>
         /// <param name="name"></param>
-        private void DeleteFromFile(string name)
+        private void DeleteConatctFromFile(string name)
         {
             string[] lines = System.IO.File.ReadAllLines(PathBook);
 
@@ -119,10 +117,10 @@ namespace PhoneBook
             }
         }
         /// <summary>
-        /// Call by name, and save in to file
+        /// Call conatct by name, and save in to file
         /// </summary>
         /// <param name="name"></param>
-        public void Call(string name)
+        public void CallConatct(string name)
         {
             ReadPhoneBookByFile();
             if (phoneBook.ContainsKey(name))
@@ -142,7 +140,7 @@ namespace PhoneBook
             var updateRecentCall = new List<string>();
             if (lines.Count() != 0)
             {
-                WriteToFile(name, lines, text, updateRecentCall);
+                AddToList(name, lines, text, updateRecentCall);
             }
             else
             {
@@ -151,20 +149,20 @@ namespace PhoneBook
             WriteToFile(updateRecentCall);
         }
 
-        private void WriteToFile(string name, List<string> lines, string text, List<string> newLines)
+        private void AddToList(string name, List<string> lines, string text, List<string> updateRecentCall)
         {
-            lines.ForEach(delegate (string s) { newLines.Add(s); });
+            lines.ForEach(delegate (string s) { updateRecentCall.Add(s); });
             if (text.Contains(name))
             {
                 var currentLine = "";
-                newLines.ForEach(delegate (string s) { if (s.Contains(name)) currentLine = s; });
-                newLines.Remove(currentLine);
+                updateRecentCall.ForEach(delegate (string s) { if (s.Contains(name)) currentLine = s; });
+                updateRecentCall.Remove(currentLine);
                 var tokens = currentLine.Split(new[] { '-', '(', ')' });
-                newLines.Add($"{phoneBook.First(x => x.Key == name).Key} - " + $"{phoneBook[name]} " + $"({int.Parse(tokens[2]) + 1 })");
+                updateRecentCall.Add($"{phoneBook.First(x => x.Key == name).Key} - " + $"{phoneBook[name]} " + $"({int.Parse(tokens[2]) + 1 })");
             }
             else
             {
-                newLines.Add($"{phoneBook.First(x => x.Key == name).Key} - " + $"{phoneBook[name]} (1)");
+                updateRecentCall.Add($"{phoneBook.First(x => x.Key == name).Key} - " + $"{phoneBook[name]} (1)");
             }
         }
 
@@ -220,7 +218,7 @@ namespace PhoneBook
         /// </summary>
         /// <param name="value"></param>
         /// <param name="name"></param>
-        public void PrintByName(KeyValuePair<string, string> value, string name)
+        public void PrintContactByName(KeyValuePair<string, string> value, string name)
         {
             if (value.Key != null)
             {
