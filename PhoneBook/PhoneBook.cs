@@ -218,7 +218,7 @@ namespace PhoneBook
         /// </summary>
         /// <param name="value"></param>
         /// <param name="name"></param>
-        public void PrintContactByName(KeyValuePair<string, string> value, string name)
+        private void PrintContactByName(KeyValuePair<string, string> value, string name)
         {
             if (value.Key != null)
             {
